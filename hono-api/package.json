@@ -1,0 +1,25 @@
+{
+  "name": "hono-api",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "tsx src/dev.ts",
+    "build": "echo \"Build gestito da Vercel (transpilazione automatica)\"",
+    "start": "node dist/dev.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "googleapis": "^170.1.0",
+    "hono": "^4.11.7"
+  },
+  "devDependencies": {
+    "@hono/node-server": "^1.19.9",
+    "@types/node": "^25.1.0",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  },
+  "description": ""
+}

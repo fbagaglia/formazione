@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Accademia dell'Umanesimo Digitale · Catalogo</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body class="app-body">
+    <header class="hero">
+      <div class="hero__content">
+        <span class="pill pill--accent">Human-centered AI</span>
+        <h1 class="hero__title">Accademia dell'Umanesimo Digitale</h1>
+        <p class="hero__subtitle">Percorsi di longlife learning sulle competenze digitali e l'AI.</p>
+        <p class="hero__text">
+          Curiamo alfabetizzazione e progettualità tecnologica con una visione umanista: qui trovi i corsi attivi
+          e i loro materiali.
+        </p>
+      </div>
+    </header>
+
+    <main class="section">
+      <div class="section__header">
+        <span class="pill">Catalogo corsi</span>
+        <h2 class="section__title">Esplora gli itinerari formativi</h2>
+        <p class="section__subtitle">
+          Collegati ai corsi attivi su Google Classroom e scopri le sessioni narrative con toolkit e risorse.
+        </p>
+      </div>
+
+      <div id="course-list" class="course-grid" role="list" aria-live="polite">
+        <div class="skeleton-grid">
+          <div class="skeleton-card"></div>
+          <div class="skeleton-card"></div>
+          <div class="skeleton-card"></div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <p>Accademia dell'Umanesimo Digitale · Franco Bagaglia</p>
+      <p class="text-muted">Imparare con tecnologia e cura, per una rivoluzione consapevole.</p>
+    </footer>
+
+    <script src="./main.js" type="module"></script>
+  </body>
+</html>

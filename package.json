@@ -1,20 +1,17 @@
 {
-  "name": "webapp",
+  "name": "accademia-umanesimo-digitale",
+  "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "wrangler pages dev",
-    "deploy": "npm run build && wrangler pages deploy",
-    "cf-typegen": "wrangler types --env-interface CloudflareBindings"
+    "dev:api": "tsx hono-api/src/dev.ts"
   },
   "dependencies": {
-    "hono": "^4.11.5"
+    "googleapis": "^170.1.0",
+    "hono": "^4.11.7"
   },
   "devDependencies": {
-    "@hono/vite-build": "^1.2.0",
-    "@hono/vite-dev-server": "^0.18.2",
-    "vite": "^6.3.5",
-    "wrangler": "^4.4.0"
+    "@hono/node-server": "^1.19.9",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
   }
 }
