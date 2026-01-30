@@ -1,4 +1,4 @@
-const ENDPOINT = '/api/classroom/courses'
+const ENDPOINT = '/api'
 
 const courseListEl = document.querySelector('#course-list')
 

@@ -13,7 +13,7 @@ if (!courseId) {
 
 async function loadCourse(id) {
   try {
-    const response = await fetch(`/api/classroom/courses/${encodeURIComponent(id)}`)
+    const response = await fetch(`/api/${encodeURIComponent(id)}`)
 
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}`)
