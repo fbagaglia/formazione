@@ -1,3 +1,4 @@
+import process from 'node:process'
 import { google, classroom_v1 } from 'googleapis'
 
 const CLASSROOM_SCOPES = [
