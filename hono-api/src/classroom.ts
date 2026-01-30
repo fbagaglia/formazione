@@ -62,7 +62,6 @@ export type ClassroomCourse = {
   link: string
   updateTime?: string
   section?: string
-  subject?: string
 }
 
 export type ClassroomCourseDetail = ClassroomCourse & {
@@ -103,7 +102,6 @@ export async function listClassroomCourses(): Promise<ClassroomCourse[]> {
       link: course.alternateLink ?? 'https://classroom.google.com',
       updateTime: course.updateTime ?? course.creationTime ?? undefined,
       section: course.section ?? undefined,
-      subject: course.subject ?? undefined,
     }))
 }
 
@@ -172,7 +170,6 @@ export async function getClassroomCourse(courseId: string): Promise<ClassroomCou
       link: course.alternateLink ?? 'https://classroom.google.com',
       updateTime: course.updateTime ?? course.creationTime ?? undefined,
       section: course.section ?? undefined,
-      subject: course.subject ?? undefined,
       description,
       audience: course.room ?? undefined,
       duration: undefined,
@@ -199,7 +196,8 @@ function buildDescription(course: classroom_v1.Schema$Course): string | undefine
 
 function buildTags(course: classroom_v1.Schema$Course, topics: classroom_v1.Schema$Topic[]): string[] {
   const tags = new Set<string>()
-  if (course.subject) tags.add(course.subject)
+  if (course.section) tags.add(course.section)
+  if (course.descriptionHeading) tags.add(course.descriptionHeading)
   topics.forEach((topic) => {
     if (topic.name) tags.add(topic.name)
   })
@@ -213,7 +211,7 @@ function transformMaterial(
   if (material.link?.url) {
     return {
       title: material.link.title ?? fallbackTitle ?? 'Link risorsa',
-      description: material.link.description ?? undefined,
+      description: undefined,
       url: material.link.url,
     }
   }
