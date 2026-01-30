@@ -17,7 +17,11 @@ app.get('/api/classroom/courses', async (c) => {
     return c.json(courses)
   } catch (error: unknown) {
     console.error('Errore elenco corsi Classroom', error)
-    return c.json({ message: 'Impossibile recuperare l\'elenco dei corsi' }, 500)
+    const detail = error instanceof Error ? error.message : JSON.stringify(error)
+    return c.json({
+      message: 'Impossibile recuperare l\'elenco dei corsi',
+      detail,
+    }, 500)
   }
 })
 
@@ -31,7 +35,11 @@ app.get('/api/classroom/courses/:id', async (c) => {
     return c.json(course)
   } catch (error: unknown) {
     console.error('Errore dettaglio corso Classroom', error)
-    return c.json({ message: 'Impossibile recuperare il corso richiesto' }, 500)
+    const detail = error instanceof Error ? error.message : JSON.stringify(error)
+    return c.json({
+      message: 'Impossibile recuperare il corso richiesto',
+      detail,
+    }, 500)
   }
 })
 
