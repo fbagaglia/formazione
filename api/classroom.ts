@@ -15,11 +15,12 @@ async function getAccessToken(): Promise<string> {
   });
 
   try {
+    // getAccessToken() rinfresca automaticamente il token se scaduto utilizzando il refresh_token
     const { token } = await oauth2Client.getAccessToken();
     return token || '';
   } catch (error) {
     console.error('Errore durante il recupero del token di accesso:', error);
-    throw new Error('Autenticazione Google fallita');
+    throw new Error('Autenticazione Google fallita: verifica Client ID, Secret e Refresh Token');
   }
 }
 
@@ -37,7 +38,12 @@ export async function getCourses() {
   });
   
   if (!response.ok) {
-    throw new Error(`Google API error: ${response.statusText}`);
+    // Diagnostica avanzata: leggiamo il motivo del "Forbidden" fornito da Google
+    const errorBody = await response.json().catch(() => ({}));
+    console.error('Google API Error Details:', JSON.stringify(errorBody, null, 2));
+    
+    const message = errorBody.error?.message || response.statusText;
+    throw new Error(`Google API error: ${response.status} ${message}. Verifica se la Classroom API è abilitata e se gli scope del token sono corretti.`);
   }
 
   const data = await response.json();
@@ -66,7 +72,11 @@ export async function getCourseDetail(id: string) {
   });
   
   if (!response.ok) {
-    throw new Error(`Google API error: ${response.statusText}`);
+    const errorBody = await response.json().catch(() => ({}));
+    console.error('Google API Error Details:', JSON.stringify(errorBody, null, 2));
+    
+    const message = errorBody.error?.message || response.statusText;
+    throw new Error(`Google API error: ${response.status} ${message}`);
   }
 
   const course = await response.json();
