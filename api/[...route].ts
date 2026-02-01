@@ -1,69 +1,33 @@
 import { Hono } from 'hono'
 import { handle } from 'hono/vercel'
-import { google } from 'googleapis'
+import { cors } from 'hono/cors'
+import { getCourses, getCourseDetail } from '../src/classroom'
 
-/**
- * Franco, ho corretto l'errore semantico: 
- * Google Classroom API usa 'creationTime' e non 'createTime'.
- * Inoltre, ho strutturato il file per essere pienamente compatibile con Vercel.
- */
+const app = new Hono()
 
-const app = new Hono().basePath('/api')
+// Middleware CORS
+app.use('/api/*', cors())
 
-async function getAccessToken() {
-  const oauth2Client = new google.auth.OAuth2(
-    process.env.GOOGLE_CLIENT_ID,
-    process.env.GOOGLE_CLIENT_SECRET
-  )
-  oauth2Client.setCredentials({
-    refresh_token: process.env.GOOGLE_REFRESH_TOKEN
-  })
-  const { token } = await oauth2Client.getAccessToken()
-  return token
-}
-
-// Rotta per l'elenco corsi
-app.get('/classroom/courses', async (c) => {
+// Endpoint: Elenco Corsi
+app.get('/api/classroom/courses', async (c) => {
   try {
-    const token = await getAccessToken()
-    const resp = await fetch('https://classroom.googleapis.com/v1/courses?courseStates=ACTIVE', {
-      headers: { Authorization: `Bearer ${token}` }
-    })
-    const data = await resp.json()
-    const courses = data.courses || []
-
-    return c.json(courses.map((corso: any) => ({
-      id: corso.id,
-      title: corso.name,
-      subtitle: corso.section,
-      link: corso.alternateLink,
-      creationTime: corso.creationTime // CORRETTO: era createTime
-    })))
+    const courses = await getCourses()
+    return c.json(courses)
   } catch (error) {
-    return c.json({ error: 'Errore nel recupero corsi' }, 500)
+    console.error('Errore getCourses:', error)
+    return c.json({ error: 'Errore interno server' }, 500)
   }
 })
 
-// Rotta per il dettaglio del corso
-app.get('/classroom/courses/:id', async (c) => {
+// Endpoint: Dettaglio Corso
+app.get('/api/classroom/courses/:id', async (c) => {
   const id = c.req.param('id')
   try {
-    const token = await getAccessToken()
-    const resp = await fetch(`https://classroom.googleapis.com/v1/courses/${id}`, {
-      headers: { Authorization: `Bearer ${token}` }
-    })
-    const corso = await resp.json()
-
-    return c.json({
-      id: corso.id,
-      title: corso.name,
-      subtitle: corso.section,
-      description: corso.description,
-      link: corso.alternateLink,
-      creationTime: corso.creationTime // CORRETTO: era createTime
-    })
+    const course = await getCourseDetail(id)
+    return c.json(course)
   } catch (error) {
-    return c.json({ error: 'Errore nel recupero dettaglio corso' }, 500)
+    console.error('Errore getCourseDetail:', error)
+    return c.json({ error: 'Corso non trovato' }, 404)
   }
 })
 
