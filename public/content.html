@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Materiali del Corso | AUD</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --nero: #0C0D0D;
+            --verde: #379557;
+            --bianco-testo: #F2F5F3;
+        }
+        body { background-color: var(--nero); color: var(--bianco-testo); font-family: 'Inter', sans-serif; margin: 0; }
+        .hero-gradient { background: radial-gradient(circle at top right, rgba(55, 149, 87, 0.05), var(--nero) 60%); min-height: 100vh; }
+        .content-card { background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.08); transition: all 0.3s ease; }
+        .content-card:hover { border-color: var(--verde); background: rgba(255, 255, 255, 0.04); }
+    </style>
+</head>
+<body class="hero-gradient">
+    <header class="border-b border-white/10 sticky top-0 bg-black/90 backdrop-blur-md z-50">
+        <div class="max-w-6xl mx-auto px-6 py-5 flex justify-between items-center">
+            <div class="cursor-pointer flex items-center gap-4" onclick="window.history.back()">
+                <div class="w-10 h-10 bg-[#379557] rounded-lg flex items-center justify-center text-white font-bold">AUD</div>
+                <h1 class="text-white text-lg font-black tracking-tight uppercase leading-none">Materiali Didattici</h1>
+            </div>
+            <button onclick="window.history.back()" class="text-[#379557] text-sm font-bold">← TORNA INDIETRO</button>
+        </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto px-6 py-12">
+        <div id="course-header" class="mb-12">
+            <!-- Titolo corso iniettato qui -->
+        </div>
+
+        <div class="grid lg:grid-cols-3 gap-8">
+            <!-- Colonna Sinistra: Annunci e Testi -->
+            <div class="lg:col-span-2 space-y-6" id="announcements-list">
+                <h3 class="text-xl font-bold border-l-4 border-verde pl-4">Comunicazioni e Testi</h3>
+                <div class="p-6 content-card rounded-2xl animate-pulse">Caricamento messaggi...</div>
+            </div>
+
+            <!-- Colonna Destra: Compiti e Allegati -->
+            <div class="space-y-6" id="assignments-list">
+                <h3 class="text-xl font-bold border-l-4 border-verde pl-4">Compiti e Allegati</h3>
+                <div class="p-6 content-card rounded-2xl animate-pulse">Caricamento compiti...</div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const courseId = params.get('id');
+
+        async function fetchContent() {
+            if (!courseId) return;
+
+            try {
+                // In un'implementazione reale, qui chiameresti endpoint specifici per courseWork e announcements
+                // Per ora recuperiamo il dettaglio base e mostriamo dei placeholder strutturati
+                const res = await fetch(`/api/classroom/courses/${courseId}`);
+                const course = await res.json();
+                
+                document.getElementById('course-header').innerHTML = `
+                    <h2 class="text-4xl font-black text-white mb-2">${course.title}</h2>
+                    <p class="text-verde font-bold uppercase tracking-widest text-sm">Contenuti Estratti da Google Classroom</p>
+                `;
+
+                // Esempio di rendering per comunicazioni (mocking se l'API non è ancora estesa)
+                renderAnnouncements(course);
+                renderAssignments(course);
+
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        function renderAnnouncements(course) {
+            const list = document.getElementById('announcements-list');
+            // Nota: Qui andrebbe la logica per ciclare su course.announcements
+            list.innerHTML = `
+                <h3 class="text-xl font-bold border-l-4 border-verde pl-4 mb-6">Comunicazioni e Testi</h3>
+                <div class="p-8 content-card rounded-3xl space-y-4">
+                    <p class="text-white font-bold">Benvenuti nel modulo: ${course.title}</p>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        In questa sezione troverai tutti i testi critici e le dispense caricate dal docente. 
+                        L'umanesimo digitale ci impone di leggere con occhio critico ogni riga di codice e di pensiero.
+                    </p>
+                    <div class="pt-4 flex gap-4">
+                        <span class="text-xs bg-verde/10 text-verde px-3 py-1 rounded-full font-bold">PDF</span>
+                        <span class="text-xs bg-verde/10 text-verde px-3 py-1 rounded-full font-bold">DISPENSA</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderAssignments(course) {
+            const list = document.getElementById('assignments-list');
+            // Nota: Qui andrebbe la logica per ciclare su course.courseWork
+            list.innerHTML = `
+                <h3 class="text-xl font-bold border-l-4 border-verde pl-4 mb-6">Compiti e Attività</h3>
+                <div class="p-6 content-card rounded-2xl border-l-4 border-amber-500/50">
+                    <h4 class="font-bold text-white mb-2">Esercitazione: Analisi Etica AI</h4>
+                    <p class="text-xs text-gray-500 mb-4">Scadenza: Prossima settimana</p>
+                    <button class="w-full py-3 bg-white/5 hover:bg-white/10 rounded-xl text-xs font-bold transition-all uppercase tracking-widest">
+                        Apri Consegna
+                    </button>
+                </div>
+                <div class="p-6 content-card rounded-2xl">
+                    <h4 class="font-bold text-white mb-2">Test di Autovalutazione</h4>
+                    <p class="text-xs text-gray-500 mb-4">Disponibile online</p>
+                    <button class="w-full py-3 bg-verde/80 hover:bg-verde rounded-xl text-xs font-bold text-white transition-all uppercase tracking-widest">
+                        Inizia Test
+                    </button>
+                </div>
+            `;
+        }
+
+        window.onload = fetchContent;
+    </script>
+</body>
+</html>
