@@ -3,13 +3,16 @@ import { handle } from 'hono/vercel'
 import { cors } from 'hono/cors'
 import { getCourses, getCourseDetail } from '../src/classroom'
 
-const app = new Hono()
+/**
+ * Standard Entry Point: api/index.ts
+ * Utilizziamo basePath('/api') affinché Hono gestisca correttamente
+ * i percorsi riscritti da vercel.json.
+ */
+const app = new Hono().basePath('/api')
 
-// Middleware CORS
-app.use('/api/*', cors())
+app.use('/*', cors())
 
-// Endpoint: Elenco Corsi
-app.get('/api/classroom/courses', async (c) => {
+app.get('/classroom/courses', async (c) => {
   try {
     const courses = await getCourses()
     return c.json(courses)
@@ -19,8 +22,7 @@ app.get('/api/classroom/courses', async (c) => {
   }
 })
 
-// Endpoint: Dettaglio Corso
-app.get('/api/classroom/courses/:id', async (c) => {
+app.get('/classroom/courses/:id', async (c) => {
   const id = c.req.param('id')
   try {
     const course = await getCourseDetail(id)
