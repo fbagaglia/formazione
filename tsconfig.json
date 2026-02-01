@@ -2,17 +2,21 @@
   "compilerOptions": {
     "target": "ESNext",
     "module": "ESNext",
-    "moduleResolution": "node",
+    "moduleResolution": "NodeNext",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "outDir": "dist",
-    "types": ["node"]
+    "types": ["node"],
+    "allowJs": true,
+    "checkJs": false,
+    "resolveJsonModule": true,
+    "noEmit": true
   },
   "include": [
-    "api/**/*",
-    "src/**/*"
+    "api/**/*.ts",
+    "src/**/*.ts"
   ],
   "exclude": [
     "node_modules"
