@@ -9,9 +9,9 @@
         :root {
             --nero: #0C0D0D;
             --verde: #379557;
-            --bianco: #D9E1DA;
+            --bianco: #F2F5F3; /* Bianco più luminoso per migliorare il contrasto */
             --grigio-scuro: #5B5F5C;
-            --grigio-chiaro: #818484;
+            --grigio-chiaro: #CBD5E0; /* Grigio più chiaro e leggibile */
         }
         body {
             background-color: var(--nero);
@@ -22,7 +22,7 @@
         .text-verde { color: var(--verde); }
         .bg-verde { background-color: var(--verde); }
         .border-grigio { border-color: var(--grigio-scuro); }
-        .card-bg { background-color: rgba(217, 225, 218, 0.05); }
+        .card-bg { background-color: rgba(242, 245, 243, 0.05); }
         .transition-custom { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
         
         .hero-gradient {
@@ -35,7 +35,7 @@
 </head>
 <body class="min-h-screen hero-gradient">
 
-    <header class="border-b border-grigio/30 sticky top-0 bg-black/80 backdrop-blur-xl z-50">
+    <header class="border-b border-white/10 sticky top-0 bg-black/80 backdrop-blur-xl z-50">
         <div class="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center">
             <div class="cursor-pointer group flex items-center gap-3" onclick="window.location.href='/'">
                 <div class="w-10 h-10 bg-verde rounded-lg flex items-center justify-center transition-transform group-hover:rotate-12">
@@ -57,36 +57,36 @@
     <main class="max-w-7xl mx-auto px-6 py-20">
         <div id="loading" class="flex flex-col items-center justify-center py-40">
             <div class="w-12 h-12 border-4 border-verde/20 border-t-verde rounded-full animate-spin"></div>
-            <p class="mt-4 text-sm font-medium opacity-50 tracking-widest uppercase">Sincronizzazione Sapere...</p>
+            <p class="mt-4 text-sm font-medium opacity-70 tracking-widest uppercase">Sincronizzazione Sapere...</p>
         </div>
 
         <section id="view-catalog" class="hidden animate-in fade-in slide-in-from-bottom-4 duration-1000">
             <div class="grid lg:grid-cols-12 gap-16 mb-20 items-end">
                 <div class="lg:col-span-8">
                     <h2 class="text-6xl font-black mb-8 leading-none">I Sentieri della <br><span class="text-verde">Consapevolezza</span>.</h2>
-                    <p class="text-xl text-grigio-chiaro leading-relaxed max-w-2xl">
+                    <p class="text-xl text-white/80 leading-relaxed max-w-2xl">
                         Benvenuto nel cuore dell'apprendimento etico. Qui la tecnologia non è un fine, ma uno strumento di emancipazione per l'essere umano nell'era dell'AI.
                     </p>
                 </div>
                 <div class="lg:col-span-4 flex justify-end">
                     <div class="text-right border-l-2 border-verde pl-6 py-2">
                         <span class="block text-4xl font-bold" id="course-count">0</span>
-                        <span class="text-xs uppercase tracking-widest opacity-50 font-bold">Corsi Attivi</span>
+                        <span class="text-xs uppercase tracking-widest opacity-60 font-bold">Corsi Attivi</span>
                     </div>
                 </div>
             </div>
             
             <div id="catalog-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
 
-            <section class="mt-32 pt-20 border-t border-grigio/20">
+            <section class="mt-32 pt-20 border-t border-white/10">
                 <h3 class="text-3xl font-bold mb-12 text-center">Domande sul Percorso</h3>
                 <div class="max-w-3xl mx-auto space-y-4">
-                    <details class="group card-bg border border-grigio/20 rounded-2xl overflow-hidden transition-all duration-300">
+                    <details class="group card-bg border border-white/10 rounded-2xl overflow-hidden transition-all duration-300">
                         <summary class="flex justify-between items-center p-6 cursor-pointer font-bold text-lg hover:text-verde transition-colors">
                             Cos'è l'Umanesimo Digitale?
                             <svg class="w-6 h-6 transform transition-transform duration-300 text-verde" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                         </summary>
-                        <div class="p-6 pt-0 opacity-70 leading-relaxed border-t border-grigio/10">
+                        <div class="p-6 pt-0 text-white/70 leading-relaxed border-t border-white/5">
                             È la visione che pone l'uomo al centro dello sviluppo tecnologico. Non rifiutiamo l'intelligenza artificiale, ma la guidiamo con senso critico ed etica per democratizzare il sapere.
                         </div>
                     </details>
@@ -98,7 +98,7 @@
             <div id="course-header" class="mb-16"></div>
             <div class="grid lg:grid-cols-3 gap-16">
                 <div class="lg:col-span-2 space-y-10">
-                    <div id="course-description" class="prose prose-invert lg:prose-xl max-w-none"></div>
+                    <div id="course-description" class="prose prose-invert lg:prose-xl max-w-none text-white/90"></div>
                     <div id="sessions-list" class="space-y-6"></div>
                 </div>
                 <aside id="course-sidebar" class="space-y-8"></aside>
@@ -106,8 +106,8 @@
         </section>
     </main>
 
-    <footer class="mt-40 border-t border-grigio/20 py-20 bg-black/40">
-        <div class="max-w-7xl mx-auto px-6 text-center md:text-left flex flex-col md:flex-row justify-between items-center opacity-50 text-sm">
+    <footer class="mt-40 border-t border-white/10 py-20 bg-black/40">
+        <div class="max-w-7xl mx-auto px-6 text-center md:text-left flex flex-col md:flex-row justify-between items-center opacity-60 text-sm">
             <p>© 2024 Franco Bagaglia • Ingegnere e Umanista Digitale</p>
         </div>
     </footer>
@@ -146,7 +146,6 @@
             showView('loading');
             try {
                 const response = await fetch(getFullApiUrl('/courses'));
-                if (response.status === 404) throw new Error('API non trovata (404)');
                 const courses = response.ok ? await response.json() : MOCK_COURSES;
 
                 const container = document.getElementById('catalog-grid');
@@ -155,19 +154,19 @@
 
                 courses.forEach(course => {
                     const card = document.createElement('div');
-                    card.className = 'group card-bg border border-grigio/30 p-10 rounded-[32px] transition-custom hover:border-verde/50 hover:-translate-y-2 cursor-pointer flex flex-col h-full';
+                    card.className = 'group card-bg border border-white/10 p-10 rounded-[32px] transition-custom hover:border-verde/50 hover:-translate-y-2 cursor-pointer flex flex-col h-full';
                     card.onclick = () => window.location.href = `?id=${course.id}`;
                     card.innerHTML = `
                         <div class="flex-grow">
                             <h3 class="text-3xl font-black mb-4 group-hover:text-verde transition-colors leading-tight">${course.title}</h3>
-                            <p class="text-grigio-chiaro text-sm leading-relaxed opacity-70 mb-8">${course.subtitle || 'Competenze critiche.'}</p>
+                            <p class="text-white/70 text-sm leading-relaxed mb-8">${course.subtitle || 'Competenze critiche.'}</p>
                         </div>
+                        <div class="mt-auto text-verde font-bold text-xs uppercase tracking-widest">Esplora modulo →</div>
                     `;
                     container.appendChild(card);
                 });
                 showView('catalog');
             } catch (error) {
-                console.warn('Utilizzo dati di fallback:', error.message);
                 renderCatalog(MOCK_COURSES);
             }
         }
@@ -177,9 +176,9 @@
             container.innerHTML = '';
             courses.forEach(c => {
                 const card = document.createElement('div');
-                card.className = 'group card-bg border border-grigio/30 p-10 rounded-[32px] transition-custom cursor-pointer';
+                card.className = 'group card-bg border border-white/10 p-10 rounded-[32px] transition-custom cursor-pointer';
                 card.onclick = () => window.location.href = `?id=${c.id}`;
-                card.innerHTML = `<h3 class="text-3xl font-black">${c.title}</h3>`;
+                card.innerHTML = `<h3 class="text-3xl font-black mb-4">${c.title}</h3><div class="text-verde font-bold text-xs uppercase tracking-widest">Esplora →</div>`;
                 container.appendChild(card);
             });
             showView('catalog');
@@ -191,9 +190,9 @@
                 const response = await fetch(getFullApiUrl(`/courses/${id}`));
                 const course = response.ok ? await response.json() : MOCK_COURSES[0];
                 
-                document.getElementById('course-header').innerHTML = `<h2 class="text-7xl font-black">${course.title}</h2>`;
-                document.getElementById('course-description').innerHTML = `<p>${course.description || 'Dettagli in arrivo.'}</p>`;
-                document.getElementById('sessions-list').innerHTML = `<div class="bg-white/5 p-10 rounded-[40px] border border-grigio/20"><h4 class="text-xl font-bold">Materiali Classroom</h4><a href="${course.link || '#'}" target="_blank" class="mt-4 inline-block bg-verde text-white px-10 py-5 rounded-full uppercase font-black">Accedi</a></div>`;
+                document.getElementById('course-header').innerHTML = `<h2 class="text-7xl font-black">${course.title}</h2><p class="text-2xl text-verde font-medium mt-4 italic">${course.subtitle || ''}</p>`;
+                document.getElementById('course-description').innerHTML = `<p class="leading-relaxed">${course.description || 'Dettagli in arrivo.'}</p>`;
+                document.getElementById('sessions-list').innerHTML = `<div class="bg-white/5 p-10 rounded-[40px] border border-white/10"><h4 class="text-xl font-bold mb-4">Materiali Classroom</h4><p class="text-white/60 mb-8 text-lg">Accedi alla piattaforma Google per consultare slide, video e test.</p><a href="${course.link || '#'}" target="_blank" class="inline-block bg-verde text-white px-10 py-5 rounded-full uppercase font-black tracking-widest hover:scale-105 transition-transform">Entra nell'Aula Digitale</a></div>`;
                 showView('detail');
             } catch (error) {
                 window.location.href = '/';
