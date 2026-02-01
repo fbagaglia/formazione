@@ -110,6 +110,7 @@
          */
         function safeNavigate(path) {
             if (!path || path.trim() === "") return;
+            // Assicuriamoci che la navigazione avvenga correttamente
             window.location.href = path;
         }
 
