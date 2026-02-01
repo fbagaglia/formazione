@@ -1,9 +1,8 @@
 import { google } from 'googleapis';
 
 /**
- * Gestione dell'autenticazione e recupero dati da Google Classroom.
+ * Gestisce l'autenticazione OAuth2 con Google e recupera i dati.
  */
-
 async function getAccessToken() {
   const oauth2Client = new google.auth.OAuth2(
     process.env.GOOGLE_CLIENT_ID,
@@ -20,6 +19,8 @@ async function getAccessToken() {
 
 export async function getCourses() {
   const token = await getAccessToken();
+  if (!token) throw new Error('Impossibile ottenere il token di accesso');
+
   const resp = await fetch('https://classroom.googleapis.com/v1/courses?courseStates=ACTIVE', {
     headers: { Authorization: `Bearer ${token}` }
   });
@@ -32,12 +33,14 @@ export async function getCourses() {
     title: corso.name,
     subtitle: corso.section,
     link: corso.alternateLink,
-    creationTime: corso.creationTime // Corretto: rimpiazzato createTime
+    creationTime: corso.creationTime
   }));
 }
 
 export async function getCourseDetail(id: string) {
   const token = await getAccessToken();
+  if (!token) throw new Error('Impossibile ottenere il token di accesso');
+
   const resp = await fetch(`https://classroom.googleapis.com/v1/courses/${id}`, {
     headers: { Authorization: `Bearer ${token}` }
   });
@@ -50,6 +53,6 @@ export async function getCourseDetail(id: string) {
     subtitle: corso.section,
     description: corso.description,
     link: corso.alternateLink,
-    creationTime: corso.creationTime // Corretto: rimpiazzato createTime
+    creationTime: corso.creationTime
   };
 }
