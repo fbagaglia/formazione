@@ -11,8 +11,9 @@ app.get('/classroom/courses', async (c) => {
   try {
     const courses = await getCourses()
     return c.json(courses)
-  } catch (error) {
-    return c.json({ error: 'Sincronizzazione fallita' }, 500)
+  } catch (error: any) {
+    console.error('API Error (Courses):', error.message)
+    return c.json({ error: error.message || 'Sincronizzazione fallita' }, 500)
   }
 })
 
@@ -21,30 +22,33 @@ app.get('/classroom/courses/:id', async (c) => {
   try {
     const course = await getCourseDetail(id)
     return c.json(course)
-  } catch (error) {
+  } catch (error: any) {
+    console.error(`API Error (Detail ${id}):`, error.message)
     return c.json({ error: 'Risorsa non trovata' }, 404)
   }
 })
 
-// Nuova rotta per i materiali (Annunci)
+// Nuova rotta per i materiali (Annunci) - Ora restituisce l'errore reale invece di []
 app.get('/classroom/courses/:id/announcements', async (c) => {
   const id = c.req.param('id')
   try {
     const data = await getAnnouncements(id)
     return c.json(data)
-  } catch (error) {
-    return c.json([], 500)
+  } catch (error: any) {
+    console.error(`API Error (Announcements ${id}):`, error.message)
+    return c.json({ error: 'Errore recupero annunci', details: error.message }, 500)
   }
 })
 
-// Nuova rotta per i compiti (CourseWork)
+// Nuova rotta per i compiti (CourseWork) - Ora restituisce l'errore reale invece di []
 app.get('/classroom/courses/:id/coursework', async (c) => {
   const id = c.req.param('id')
   try {
     const data = await getCourseWork(id)
     return c.json(data)
-  } catch (error) {
-    return c.json([], 500)
+  } catch (error: any) {
+    console.error(`API Error (CourseWork ${id}):`, error.message)
+    return c.json({ error: 'Errore recupero compiti', details: error.message }, 500)
   }
 })
 
