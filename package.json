@@ -1,20 +1,21 @@
 {
-"name": "accademia-umanesimo-digitale",
-"private": true,
-"type": "module",
-"scripts": {
-"dev": "tsx api/[...route].ts",
-"build": "tsc"
-},
-"dependencies": {
-"@hono/node-server": "^1.19.9",
-"googleapis": "^170.1.0",
-"hono": "^4.11.7"
-},
-"devDependencies": {
-"@types/node": "^22.0.0",
-"@vercel/node": "^3.0.0",
-"tsx": "^4.21.0",
-"typescript": "^5.9.3"
-}
+  "name": "umanesimo-digitale-platform",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx api/[...route].ts",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@hono/node-server": "^1.19.9",
+    "googleapis": "^140.0.0",
+    "hono": "^4.4.7"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.9",
+    "@vercel/node": "^3.1.0",
+    "tsx": "^4.16.2",
+    "typescript": "^5.5.3"
+  }
 }
