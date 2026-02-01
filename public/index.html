@@ -57,7 +57,7 @@
 
     <header class="border-b border-white/10 sticky top-0 bg-black/90 backdrop-blur-md z-50">
         <div class="max-w-6xl mx-auto px-6 py-5 flex justify-between items-center">
-            <div class="cursor-pointer flex items-center gap-4 group" onclick="window.location.href='/'">
+            <div class="cursor-pointer flex items-center gap-4 group" onclick="safeNavigate('index.html')">
                 <div class="w-10 h-10 bg-[#379557] rounded-lg flex items-center justify-center text-white font-bold transition-transform group-hover:rotate-6">
                     AUD
                 </div>
@@ -66,11 +66,6 @@
                     <p class="text-[#379557] text-[10px] uppercase tracking-[0.2em] font-bold mt-1">Umanesimo Digitale</p>
                 </div>
             </div>
-            <nav id="nav-back" class="hidden">
-                <button onclick="window.location.href='/'" class="text-[#379557] text-sm font-bold flex items-center gap-2 hover:gap-3 transition-all">
-                    ← TORNA AL CATALOGO
-                </button>
-            </nav>
         </div>
     </header>
 
@@ -78,7 +73,7 @@
         
         <div id="loading" class="flex flex-col items-center justify-center py-32">
             <div class="spinner mb-4"></div>
-            <p class="text-sm uppercase tracking-widest text-white/50">Caricamento corsi...</p>
+            <p class="text-sm uppercase tracking-widest text-white/50">Sincronizzazione Sapere...</p>
         </div>
 
         <section id="view-catalog" class="hidden animate-in fade-in duration-700">
@@ -87,17 +82,12 @@
                     L'uomo al centro della <span class="text-[#379557]">Rivoluzione</span>.
                 </h2>
                 <p class="text-gray-300 text-lg md:text-xl leading-relaxed">
-                    Smetti di temere le macchine e impara a guidarle. Benvenuto nell'Accademia di Franco Bagaglia, dove l'apprendimento non finisce mai e l'etica governa il codice.
+                    Benvenuto nell'Accademia di Franco Bagaglia. Esplora i percorsi formativi progettati per navigare l'era dell'Intelligenza Artificiale con consapevolezza critica ed etica.
                 </p>
             </div>
             
             <div id="catalog-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
         </section>
-
-        <section id="view-detail" class="hidden max-w-4xl mx-auto animate-in slide-in-from-bottom-4 duration-500">
-            <div id="detail-content" class="space-y-12"></div>
-        </section>
-
     </main>
 
     <footer class="mt-20 border-t border-white/10 py-12">
@@ -111,26 +101,39 @@
     </footer>
 
     <script>
-        // Funzione per costruire URL assoluti ed evitare errori di parsing in ambienti sandbox
+        /**
+         * Navigazione sicura per evitare errori di URL non validi.
+         */
+        function safeNavigate(path) {
+            if (!path || typeof path !== 'string' || path.trim() === '') return;
+            window.location.href = path;
+        }
+
+        /**
+         * Costruzione URL API resiliente.
+         */
         function getApiUrl(path) {
-            const base = window.location.origin;
-            // Se l'origine è un blob o nulla, proviamo a usare un percorso relativo senza la slash iniziale
-            if (!base || base === 'null') return '/api/classroom' + path;
-            return new URL('/api/classroom' + path, base).href;
+            const apiBase = '/api/classroom' + path;
+            try {
+                if (window.location.protocol === 'blob:' || !window.location.origin || window.location.origin === 'null') {
+                    return apiBase;
+                }
+                return new URL(apiBase, window.location.origin).href;
+            } catch (e) {
+                return apiBase;
+            }
         }
         
         const MOCK = [
             { 
                 id: "aud-01", 
                 title: "Fondamenti di Umanesimo Digitale", 
-                subtitle: "Il primo passo verso la consapevolezza",
-                description: "Un'esplorazione profonda del rapporto tra uomo e algoritmo. Scopri come mantenere il controllo etico nell'era dell'automazione."
+                subtitle: "Il primo passo verso la consapevolezza"
             },
             { 
                 id: "aud-02", 
                 title: "L'AI come Pennello", 
-                subtitle: "Creatività e Generative AI",
-                description: "Non lasciare che l'AI scriva al posto tuo. Usa i modelli linguistici per espandere il tuo potenziale creativo senza smarrire la tua voce."
+                subtitle: "Creatività e Generative AI"
             }
         ];
 
@@ -138,7 +141,7 @@
             const params = new URLSearchParams(window.location.search);
             const courseId = params.get('id');
             if (courseId) {
-                await loadDetail(courseId);
+                safeNavigate(`course.html?id=${courseId}`);
             } else {
                 await loadCatalog();
             }
@@ -152,81 +155,47 @@
                 const courses = res.ok ? await res.json() : MOCK;
                 
                 const grid = document.getElementById('catalog-grid');
+                if (!grid) return;
+
                 grid.innerHTML = courses.map(c => `
-                    <div class="card-umanista p-10 rounded-3xl cursor-pointer flex flex-col h-full" onclick="window.location.href='?id=${c.id}'">
+                    <div class="card-umanista p-10 rounded-3xl cursor-pointer flex flex-col h-full" onclick="safeNavigate('course.html?id=${c.id}')">
                         <div class="flex-grow">
                             <h3 class="text-white text-2xl font-black mb-3 leading-tight">${c.title}</h3>
                             <p class="text-[#CBD5E0] text-sm leading-relaxed mb-8">${c.subtitle || 'Percorso di alfabetizzazione digitale consapevole.'}</p>
                         </div>
                         <div class="flex items-center gap-2 text-[#379557] font-bold text-xs uppercase tracking-widest">
-                            Inizia il viaggio <span>→</span>
+                            Entra in aula <span>→</span>
                         </div>
                     </div>
                 `).join('');
                 
                 showView('view-catalog');
             } catch (e) {
-                console.error("Fetch error:", e);
-                // Fallback ai dati mock in caso di errore di rete o di parsing
+                console.warn("API non raggiungibile, uso dati mock.");
                 renderMockCatalog();
             }
         }
 
         function renderMockCatalog() {
             const grid = document.getElementById('catalog-grid');
+            if (!grid) return;
+
             grid.innerHTML = MOCK.map(c => `
-                <div class="card-umanista p-10 rounded-3xl cursor-pointer flex flex-col h-full" onclick="window.location.href='?id=${c.id}'">
+                <div class="card-umanista p-10 rounded-3xl cursor-pointer flex flex-col h-full" onclick="safeNavigate('course.html?id=${c.id}')">
                     <div class="flex-grow">
                         <h3 class="text-white text-2xl font-black mb-3 leading-tight">${c.title}</h3>
                         <p class="text-[#CBD5E0] text-sm leading-relaxed mb-8">${c.subtitle}</p>
                     </div>
                     <div class="flex items-center gap-2 text-[#379557] font-bold text-xs uppercase tracking-widest">
-                        Inizia il viaggio <span>→</span>
+                        Entra in aula <span>→</span>
                     </div>
                 </div>
             `).join('');
             showView('view-catalog');
         }
 
-        async function loadDetail(id) {
-            showView('loading');
-            document.getElementById('nav-back').classList.remove('hidden');
-            try {
-                const url = getApiUrl(`/courses/${id}`);
-                const res = await fetch(url);
-                const c = res.ok ? await res.json() : MOCK.find(m => m.id === id) || MOCK[0];
-
-                document.getElementById('detail-content').innerHTML = `
-                    <div class="border-l-4 border-[#379557] pl-8 mb-12">
-                        <h2 class="text-white text-6xl font-black leading-none mb-4">${c.title}</h2>
-                        <p class="text-[#379557] text-xl font-bold italic">${c.subtitle || ''}</p>
-                    </div>
-                    
-                    <div class="bg-white/5 p-12 rounded-[40px] border border-white/10 space-y-8">
-                        <div class="prose prose-invert max-w-none">
-                            <p class="text-gray-200 text-xl leading-relaxed">${c.description || 'Contenuto del corso in fase di sincronizzazione.'}</p>
-                        </div>
-                        
-                        <div class="pt-8 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-6">
-                            <div>
-                                <h4 class="text-white font-bold mb-1">Accesso Google Classroom</h4>
-                                <p class="text-sm text-gray-400">Tutti i materiali sono centralizzati per la tua comodità.</p>
-                            </div>
-                            <a href="${c.link || '#'}" target="_blank" class="bg-[#379557] hover:bg-[#2e7d49] text-white px-10 py-4 rounded-full font-black uppercase tracking-widest transition-all hover:scale-105">
-                                Entra in Aula
-                            </a>
-                        </div>
-                    </div>
-                `;
-                showView('view-detail');
-            } catch (e) {
-                console.error("Detail fetch error:", e);
-                window.location.href = '/';
-            }
-        }
-
         function showView(viewId) {
-            ['loading', 'view-catalog', 'view-detail'].forEach(id => {
+            ['loading', 'view-catalog'].forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.classList.add('hidden');
             });
