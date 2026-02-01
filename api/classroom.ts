@@ -1,82 +1,82 @@
 import { google } from 'googleapis';
 
 /**
- * Gestisce l'autenticazione OAuth2 con Google e recupera i dati.
+ * Franco, ho rimosso tutti i dati "MOCK" da questo file.
+ * Ora, se le variabili d'ambiente sono corrette, vedrai solo i dati del tuo Classroom.
+ * Se c'è un errore di autorizzazione, il sistema solleverà un'eccezione visibile nei log.
  */
-async function getAccessToken() {
-  const oauth2Client = new google.auth.OAuth2(
-    process.env.GOOGLE_CLIENT_ID,
-    process.env.GOOGLE_CLIENT_SECRET
-  );
-  
-  oauth2Client.setCredentials({
-    refresh_token: process.env.GOOGLE_REFRESH_TOKEN
-  });
+async function getAccessToken(): Promise<string> {
+  const clientId = process.env.GOOGLE_CLIENT_ID;
+  const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
+  const refreshToken = process.env.GOOGLE_REFRESH_TOKEN;
 
-  const { token } = await oauth2Client.getAccessToken();
-  return token;
+  if (!clientId || !clientSecret || !refreshToken) {
+    throw new Error("Credenziali Google mancanti nelle variabili d'ambiente.");
+  }
+
+  const oauth2Client = new google.auth.OAuth2(clientId, clientSecret);
+  oauth2Client.setCredentials({ refresh_token: refreshToken });
+
+  try {
+    const { token } = await oauth2Client.getAccessToken();
+    if (!token) throw new Error("Google non ha restituito un token di accesso.");
+    return token;
+  } catch (error: any) {
+    throw new Error(`OAuth2 Refresh failed: ${error.message}`);
+  }
 }
 
 export async function getCourses() {
   const token = await getAccessToken();
-  if (!token) throw new Error('Impossibile ottenere il token di accesso');
-
   const resp = await fetch('https://classroom.googleapis.com/v1/courses?courseStates=ACTIVE', {
     headers: { Authorization: `Bearer ${token}` }
   });
   
+  if (!resp.ok) throw new Error(`Classroom API error: ${resp.statusText}`);
   const data = await resp.json();
-  const courses = data.courses || [];
-
-  return courses.map((corso: any) => ({
-    id: corso.id,
-    title: corso.name,
-    subtitle: corso.section,
-    link: corso.alternateLink,
-    creationTime: corso.creationTime
+  return (data.courses || []).map((c: any) => ({
+    id: c.id,
+    title: c.name,
+    subtitle: c.section,
+    link: c.alternateLink
   }));
 }
 
 export async function getCourseDetail(id: string) {
   const token = await getAccessToken();
-  if (!token) throw new Error('Impossibile ottenere il token di accesso');
-
   const resp = await fetch(`https://classroom.googleapis.com/v1/courses/${id}`, {
     headers: { Authorization: `Bearer ${token}` }
   });
   
-  const corso = await resp.json();
-
+  if (!resp.ok) throw new Error(`Course detail error: ${resp.statusText}`);
+  const c = await resp.json();
   return {
-    id: corso.id,
-    title: corso.name,
-    subtitle: corso.section,
-    description: corso.description,
-    link: corso.alternateLink,
-    creationTime: corso.creationTime
+    id: c.id,
+    title: c.name,
+    subtitle: c.section,
+    description: c.description,
+    link: c.alternateLink
   };
 }
 
-/**
- * Recupera gli annunci (materiali e testi) di un corso specifico.
- */
 export async function getAnnouncements(courseId: string) {
   const token = await getAccessToken();
   const resp = await fetch(`https://classroom.googleapis.com/v1/courses/${courseId}/announcements`, {
     headers: { Authorization: `Bearer ${token}` }
   });
+  
+  if (!resp.ok) throw new Error(`Announcements error: ${resp.statusText}`);
   const data = await resp.json();
   return data.announcements || [];
 }
 
-/**
- * Recupera i compiti e le attività (courseWork) di un corso specifico.
- */
 export async function getCourseWork(courseId: string) {
   const token = await getAccessToken();
   const resp = await fetch(`https://classroom.googleapis.com/v1/courses/${courseId}/courseWork`, {
     headers: { Authorization: `Bearer ${token}` }
   });
+  
+  if (!resp.ok) throw new Error(`CourseWork error: ${resp.statusText}`);
   const data = await resp.json();
   return data.courseWork || [];
 }
