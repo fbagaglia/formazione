@@ -2,7 +2,8 @@ import { google } from 'googleapis';
 
 /**
  * Funzione per ottenere un token di accesso valido utilizzando il Refresh Token.
- * Verifica preventivamente la presenza delle variabili d'ambiente necessarie.
+ * L'errore 'unauthorized_client' indica che le credenziali (ID o Secret) non corrispondono
+ * al progetto che ha emesso il Refresh Token.
  */
 async function getAccessToken(): Promise<string> {
   const clientId = process.env.GOOGLE_CLIENT_ID;
@@ -15,9 +16,10 @@ async function getAccessToken(): Promise<string> {
     if (!clientSecret) missing.push('GOOGLE_CLIENT_SECRET');
     if (!refreshToken) missing.push('GOOGLE_REFRESH_TOKEN');
     
-    throw new Error(`Configurazione incompleta. Variabili mancanti: ${missing.join(', ')}. Verifica le impostazioni su Vercel.`);
+    throw new Error(`Configurazione incompleta. Variabili mancanti: ${missing.join(', ')}.`);
   }
 
+  // Inizializzazione client OAuth2
   const oauth2Client = new google.auth.OAuth2(clientId, clientSecret);
   
   oauth2Client.setCredentials({
@@ -25,24 +27,29 @@ async function getAccessToken(): Promise<string> {
   });
 
   try {
-    // Il metodo getAccessToken() gestisce internamente il refresh se il token è scaduto
+    // Scambio del Refresh Token per un Access Token
     const response = await oauth2Client.getAccessToken();
     const token = response.token;
     
     if (!token) {
-      throw new Error('Google non ha restituito un token di accesso valido.');
+      throw new Error('Google non ha restituito un token di accesso.');
     }
     
     return token;
   } catch (error: any) {
-    // Log dettagliato dell'errore OAuth2 per il debug a runtime
+    // Log tecnico specifico per individuare la causa nel pannello Vercel
+    const errorData = error.response?.data || {};
     console.error('Dettagli errore autenticazione Google:', {
       message: error.message,
-      data: error.response?.data,
-      status: error.response?.status
+      error_code: errorData.error,
+      error_description: errorData.error_description
     });
+
+    if (errorData.error === 'unauthorized_client' || error.message.includes('unauthorized_client')) {
+      throw new Error('Autenticazione Fallita (unauthorized_client): Il Client ID o il Secret non corrispondono a quelli usati per generare il Refresh Token. Rigenera le credenziali o il token.');
+    }
     
-    throw new Error(`Autenticazione Google fallita: ${error.message}. Verifica la validità del Refresh Token.`);
+    throw new Error(`Autenticazione Google fallita: ${error.message}`);
   }
 }
 
