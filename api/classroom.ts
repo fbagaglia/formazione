@@ -2,25 +2,47 @@ import { google } from 'googleapis';
 
 /**
  * Funzione per ottenere un token di accesso valido utilizzando il Refresh Token.
- * Richiede le variabili d'ambiente: GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REFRESH_TOKEN.
+ * Verifica preventivamente la presenza delle variabili d'ambiente necessarie.
  */
 async function getAccessToken(): Promise<string> {
-  const oauth2Client = new google.auth.OAuth2(
-    process.env.GOOGLE_CLIENT_ID,
-    process.env.GOOGLE_CLIENT_SECRET
-  );
+  const clientId = process.env.GOOGLE_CLIENT_ID;
+  const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
+  const refreshToken = process.env.GOOGLE_REFRESH_TOKEN;
+
+  if (!clientId || !clientSecret || !refreshToken) {
+    const missing = [];
+    if (!clientId) missing.push('GOOGLE_CLIENT_ID');
+    if (!clientSecret) missing.push('GOOGLE_CLIENT_SECRET');
+    if (!refreshToken) missing.push('GOOGLE_REFRESH_TOKEN');
+    
+    throw new Error(`Configurazione incompleta. Variabili mancanti: ${missing.join(', ')}. Verifica le impostazioni su Vercel.`);
+  }
+
+  const oauth2Client = new google.auth.OAuth2(clientId, clientSecret);
   
   oauth2Client.setCredentials({
-    refresh_token: process.env.GOOGLE_REFRESH_TOKEN
+    refresh_token: refreshToken
   });
 
   try {
-    // getAccessToken() rinfresca automaticamente il token se scaduto utilizzando il refresh_token
-    const { token } = await oauth2Client.getAccessToken();
-    return token || '';
-  } catch (error) {
-    console.error('Errore durante il recupero del token di accesso:', error);
-    throw new Error('Autenticazione Google fallita: verifica Client ID, Secret e Refresh Token');
+    // Il metodo getAccessToken() gestisce internamente il refresh se il token è scaduto
+    const response = await oauth2Client.getAccessToken();
+    const token = response.token;
+    
+    if (!token) {
+      throw new Error('Google non ha restituito un token di accesso valido.');
+    }
+    
+    return token;
+  } catch (error: any) {
+    // Log dettagliato dell'errore OAuth2 per il debug a runtime
+    console.error('Dettagli errore autenticazione Google:', {
+      message: error.message,
+      data: error.response?.data,
+      status: error.response?.status
+    });
+    
+    throw new Error(`Autenticazione Google fallita: ${error.message}. Verifica la validità del Refresh Token.`);
   }
 }
 
@@ -38,12 +60,11 @@ export async function getCourses() {
   });
   
   if (!response.ok) {
-    // Diagnostica avanzata: leggiamo il motivo del "Forbidden" fornito da Google
     const errorBody = await response.json().catch(() => ({}));
-    console.error('Google API Error Details:', JSON.stringify(errorBody, null, 2));
+    console.error('Google API Error Details (Courses):', JSON.stringify(errorBody, null, 2));
     
     const message = errorBody.error?.message || response.statusText;
-    throw new Error(`Google API error: ${response.status} ${message}. Verifica se la Classroom API è abilitata e se gli scope del token sono corretti.`);
+    throw new Error(`Google API error: ${response.status} ${message}.`);
   }
 
   const data = await response.json();
@@ -73,7 +94,7 @@ export async function getCourseDetail(id: string) {
   
   if (!response.ok) {
     const errorBody = await response.json().catch(() => ({}));
-    console.error('Google API Error Details:', JSON.stringify(errorBody, null, 2));
+    console.error('Google API Error Details (Detail):', JSON.stringify(errorBody, null, 2));
     
     const message = errorBody.error?.message || response.statusText;
     throw new Error(`Google API error: ${response.status} ${message}`);
