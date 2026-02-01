@@ -9,17 +9,7 @@
     "forceConsistentCasingInFileNames": true,
     "outDir": "dist",
     "types": ["node"],
-    "allowJs": true,
-    "checkJs": false,
-    "resolveJsonModule": true,
-    "noEmit": true,
-    "isolatedModules": true
+    "noEmit": true
   },
-  "include": [
-    "api/**/*.ts",
-    "src/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["api/**/*.ts"]
 }
