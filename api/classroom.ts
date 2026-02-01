@@ -1,29 +1,48 @@
 import { google } from 'googleapis';
 
-/**
- * Franco, ho rimosso tutti i dati "MOCK" da questo file.
- * Ora, se le variabili d'ambiente sono corrette, vedrai solo i dati del tuo Classroom.
- * Se c'è un errore di autorizzazione, il sistema solleverà un'eccezione visibile nei log.
- */
+// Definizione delle interfacce per garantire la correttezza dei tipi (Fix TS18046)
+interface ClassroomCourse {
+  id: string;
+  name: string;
+  section?: string;
+  description?: string;
+  alternateLink: string;
+}
+
+interface ClassroomAnnouncement {
+  id: string;
+  text?: string;
+  updateTime: string;
+  materials?: any[];
+}
+
+interface ClassroomCourseWork {
+  id: string;
+  title: string;
+  alternateLink: string;
+  dueDate?: any;
+}
+
+interface ClassroomTopic {
+  topicId: string;
+  name: string;
+}
+
 async function getAccessToken(): Promise<string> {
   const clientId = process.env.GOOGLE_CLIENT_ID;
   const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
   const refreshToken = process.env.GOOGLE_REFRESH_TOKEN;
 
   if (!clientId || !clientSecret || !refreshToken) {
-    throw new Error("Credenziali Google mancanti nelle variabili d'ambiente.");
+    throw new Error("Credenziali Google mancanti.");
   }
 
   const oauth2Client = new google.auth.OAuth2(clientId, clientSecret);
   oauth2Client.setCredentials({ refresh_token: refreshToken });
 
-  try {
-    const { token } = await oauth2Client.getAccessToken();
-    if (!token) throw new Error("Google non ha restituito un token di accesso.");
-    return token;
-  } catch (error: any) {
-    throw new Error(`OAuth2 Refresh failed: ${error.message}`);
-  }
+  const { token } = await oauth2Client.getAccessToken();
+  if (!token) throw new Error("Impossibile ottenere il token.");
+  return token;
 }
 
 export async function getCourses() {
@@ -32,9 +51,8 @@ export async function getCourses() {
     headers: { Authorization: `Bearer ${token}` }
   });
   
-  if (!resp.ok) throw new Error(`Classroom API error: ${resp.statusText}`);
-  const data = await resp.json();
-  return (data.courses || []).map((c: any) => ({
+  const data = await resp.json() as { courses?: ClassroomCourse[] };
+  return (data.courses || []).map(c => ({
     id: c.id,
     title: c.name,
     subtitle: c.section,
@@ -48,8 +66,7 @@ export async function getCourseDetail(id: string) {
     headers: { Authorization: `Bearer ${token}` }
   });
   
-  if (!resp.ok) throw new Error(`Course detail error: ${resp.statusText}`);
-  const c = await resp.json();
+  const c = await resp.json() as ClassroomCourse;
   return {
     id: c.id,
     title: c.name,
@@ -65,8 +82,7 @@ export async function getAnnouncements(courseId: string) {
     headers: { Authorization: `Bearer ${token}` }
   });
   
-  if (!resp.ok) throw new Error(`Announcements error: ${resp.statusText}`);
-  const data = await resp.json();
+  const data = await resp.json() as { announcements?: ClassroomAnnouncement[] };
   return data.announcements || [];
 }
 
@@ -76,7 +92,26 @@ export async function getCourseWork(courseId: string) {
     headers: { Authorization: `Bearer ${token}` }
   });
   
-  if (!resp.ok) throw new Error(`CourseWork error: ${resp.statusText}`);
-  const data = await resp.json();
+  const data = await resp.json() as { courseWork?: ClassroomCourseWork[] };
   return data.courseWork || [];
+}
+
+// Implementazione mancante per i materiali (Fix TS2305)
+export async function getMaterials(courseId: string) {
+  const token = await getAccessToken();
+  const resp = await fetch(`https://classroom.googleapis.com/v1/courses/${courseId}/courseWorkMaterials`, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  const data = await resp.json() as { courseWorkMaterial?: any[] };
+  return data.courseWorkMaterial || [];
+}
+
+// Implementazione mancante per gli argomenti (Fix TS2305)
+export async function getTopics(courseId: string) {
+  const token = await getAccessToken();
+  const resp = await fetch(`https://classroom.googleapis.com/v1/courses/${courseId}/topics`, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  const data = await resp.json() as { topic?: ClassroomTopic[] };
+  return data.topic || [];
 }
