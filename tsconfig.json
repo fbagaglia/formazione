@@ -12,7 +12,8 @@
     "allowJs": true,
     "checkJs": false,
     "resolveJsonModule": true,
-    "noEmit": true
+    "noEmit": true,
+    "isolatedModules": true
   },
   "include": [
     "api/**/*.ts",
