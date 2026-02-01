@@ -1,37 +1,82 @@
-import { Hono } from 'hono'
-import { handle } from 'hono/vercel'
-import { cors } from 'hono/cors'
-import { getCourses, getCourseDetail } from './classroom.js'
+import { google } from 'googleapis';
 
 /**
- * Franco, questo è il nuovo cuore pulsante del backend.
- * Ho impostato il basePath su '/api' per gestire correttamente
- * l'instradamento di Vercel.
+ * Funzione per ottenere un token di accesso valido utilizzando il Refresh Token.
+ * Richiede le variabili d'ambiente: GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REFRESH_TOKEN.
  */
-const app = new Hono().basePath('/api')
+async function getAccessToken(): Promise<string> {
+  const oauth2Client = new google.auth.OAuth2(
+    process.env.GOOGLE_CLIENT_ID,
+    process.env.GOOGLE_CLIENT_SECRET
+  );
+  
+  oauth2Client.setCredentials({
+    refresh_token: process.env.GOOGLE_REFRESH_TOKEN
+  });
 
-app.use('/*', cors())
-
-app.get('/classroom/courses', async (c) => {
   try {
-    const courses = await getCourses()
-    return c.json(courses)
+    const { token } = await oauth2Client.getAccessToken();
+    return token || '';
   } catch (error) {
-    console.error('Errore backend corsi:', error)
-    return c.json({ error: 'Sincronizzazione fallita: il sapere è temporaneamente inaccessibile' }, 500)
+    console.error('Errore durante il recupero del token di accesso:', error);
+    throw new Error('Autenticazione Google fallita');
   }
-})
+}
 
-app.get('/classroom/courses/:id', async (c) => {
-  const id = c.req.param('id')
-  try {
-    const course = await getCourseDetail(id)
-    return c.json(course)
-  } catch (error) {
-    console.error(`Errore backend dettaglio ${id}:`, error)
-    return c.json({ error: 'Il sentiero richiesto non è stato trovato' }, 500)
+/**
+ * Recupera l'elenco dei corsi attivi dall'account Google Classroom collegato.
+ */
+export async function getCourses() {
+  const token = await getAccessToken();
+  
+  const response = await fetch('https://classroom.googleapis.com/v1/courses?courseStates=ACTIVE', {
+    headers: { 
+      'Authorization': `Bearer ${token}`,
+      'Accept': 'application/json'
+    }
+  });
+  
+  if (!response.ok) {
+    throw new Error(`Google API error: ${response.statusText}`);
   }
-})
 
-export const GET = handle(app)
-export const POST = handle(app)
+  const data = await response.json();
+  const courses = data.courses || [];
+
+  return courses.map((course: any) => ({
+    id: course.id,
+    title: course.name,
+    subtitle: course.section,
+    link: course.alternateLink,
+    creationTime: course.creationTime
+  }));
+}
+
+/**
+ * Recupera i dettagli di un singolo corso tramite il suo ID.
+ */
+export async function getCourseDetail(id: string) {
+  const token = await getAccessToken();
+  
+  const response = await fetch(`https://classroom.googleapis.com/v1/courses/${id}`, {
+    headers: { 
+      'Authorization': `Bearer ${token}`,
+      'Accept': 'application/json'
+    }
+  });
+  
+  if (!response.ok) {
+    throw new Error(`Google API error: ${response.statusText}`);
+  }
+
+  const course = await response.json();
+
+  return {
+    id: course.id,
+    title: course.name,
+    subtitle: course.section,
+    description: course.description,
+    link: course.alternateLink,
+    creationTime: course.creationTime
+  };
+}
