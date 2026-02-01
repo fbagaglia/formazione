@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "tsx api/[...route].ts",
-    "build": "tsc"
+    "build": "tsc --noEmit"
   },
   "dependencies": {
     "@hono/node-server": "^1.19.9",
