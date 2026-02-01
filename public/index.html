@@ -5,198 +5,233 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Accademia dell'Umanesimo Digitale | Franco Bagaglia</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
             --nero: #0C0D0D;
             --verde: #379557;
-            --bianco: #F2F5F3; /* Bianco più luminoso per migliorare il contrasto */
-            --grigio-scuro: #5B5F5C;
-            --grigio-chiaro: #CBD5E0; /* Grigio più chiaro e leggibile */
+            --bianco-puro: #FFFFFF;
+            --bianco-testo: #F2F5F3;
+            --grigio-chiaro: #CBD5E0;
         }
+        
         body {
             background-color: var(--nero);
-            color: var(--bianco);
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            scroll-behavior: smooth;
-        }
-        .text-verde { color: var(--verde); }
-        .bg-verde { background-color: var(--verde); }
-        .border-grigio { border-color: var(--grigio-scuro); }
-        .card-bg { background-color: rgba(242, 245, 243, 0.05); }
-        .transition-custom { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
-        
-        .hero-gradient {
-            background: radial-gradient(circle at top right, rgba(55, 149, 87, 0.15), transparent);
+            color: var(--bianco-testo);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            line-height: 1.6;
         }
 
-        details summary::-webkit-details-marker { display: none; }
-        details[open] summary svg { transform: rotate(180deg); }
+        .hero-gradient {
+            background: radial-gradient(circle at top right, rgba(55, 149, 87, 0.12), var(--nero) 60%);
+            min-height: 100vh;
+        }
+
+        .card-umanista {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .card-umanista:hover {
+            border-color: var(--verde);
+            background: rgba(255, 255, 255, 0.06);
+            transform: translateY(-4px);
+        }
+
+        .spinner {
+            border: 3px solid rgba(55, 149, 87, 0.1);
+            border-top: 3px solid var(--verde);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
-<body class="min-h-screen hero-gradient">
+<body class="hero-gradient">
 
-    <header class="border-b border-white/10 sticky top-0 bg-black/80 backdrop-blur-xl z-50">
-        <div class="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center">
-            <div class="cursor-pointer group flex items-center gap-3" onclick="window.location.href='/'">
-                <div class="w-10 h-10 bg-verde rounded-lg flex items-center justify-center transition-transform group-hover:rotate-12">
-                   <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+    <header class="border-b border-white/10 sticky top-0 bg-black/90 backdrop-blur-md z-50">
+        <div class="max-w-6xl mx-auto px-6 py-5 flex justify-between items-center">
+            <div class="cursor-pointer flex items-center gap-4 group" onclick="window.location.href='/'">
+                <div class="w-10 h-10 bg-[#379557] rounded-lg flex items-center justify-center text-white font-bold transition-transform group-hover:rotate-6">
+                    AUD
                 </div>
                 <div>
-                    <h1 class="text-xl font-black tracking-tighter uppercase">Accademia Umanesimo Digitale</h1>
-                    <p class="text-[10px] uppercase tracking-[0.3em] text-verde font-bold">Franco Bagaglia • Longlife Learning</p>
+                    <h1 class="text-white text-lg font-black tracking-tight uppercase leading-none">Accademia</h1>
+                    <p class="text-[#379557] text-[10px] uppercase tracking-[0.2em] font-bold mt-1">Umanesimo Digitale</p>
                 </div>
             </div>
             <nav id="nav-back" class="hidden">
-                <button onclick="window.location.href='/'" class="flex items-center gap-2 text-verde text-sm font-bold hover:gap-3 transition-all">
-                    <span>←</span> TORNA AL CATALOGO
+                <button onclick="window.location.href='/'" class="text-[#379557] text-sm font-bold flex items-center gap-2 hover:gap-3 transition-all">
+                    ← TORNA AL CATALOGO
                 </button>
             </nav>
         </div>
     </header>
 
-    <main class="max-w-7xl mx-auto px-6 py-20">
-        <div id="loading" class="flex flex-col items-center justify-center py-40">
-            <div class="w-12 h-12 border-4 border-verde/20 border-t-verde rounded-full animate-spin"></div>
-            <p class="mt-4 text-sm font-medium opacity-70 tracking-widest uppercase">Sincronizzazione Sapere...</p>
+    <main class="max-w-6xl mx-auto px-6 py-16">
+        
+        <div id="loading" class="flex flex-col items-center justify-center py-32">
+            <div class="spinner mb-4"></div>
+            <p class="text-sm uppercase tracking-widest text-white/50">Caricamento corsi...</p>
         </div>
 
-        <section id="view-catalog" class="hidden animate-in fade-in slide-in-from-bottom-4 duration-1000">
-            <div class="grid lg:grid-cols-12 gap-16 mb-20 items-end">
-                <div class="lg:col-span-8">
-                    <h2 class="text-6xl font-black mb-8 leading-none">I Sentieri della <br><span class="text-verde">Consapevolezza</span>.</h2>
-                    <p class="text-xl text-white/80 leading-relaxed max-w-2xl">
-                        Benvenuto nel cuore dell'apprendimento etico. Qui la tecnologia non è un fine, ma uno strumento di emancipazione per l'essere umano nell'era dell'AI.
-                    </p>
-                </div>
-                <div class="lg:col-span-4 flex justify-end">
-                    <div class="text-right border-l-2 border-verde pl-6 py-2">
-                        <span class="block text-4xl font-bold" id="course-count">0</span>
-                        <span class="text-xs uppercase tracking-widest opacity-60 font-bold">Corsi Attivi</span>
-                    </div>
-                </div>
+        <section id="view-catalog" class="hidden animate-in fade-in duration-700">
+            <div class="max-w-3xl mb-16">
+                <h2 class="text-white text-5xl md:text-6xl font-black mb-6 leading-tight tracking-tighter">
+                    L'uomo al centro della <span class="text-[#379557]">Rivoluzione</span>.
+                </h2>
+                <p class="text-gray-300 text-lg md:text-xl leading-relaxed">
+                    Smetti di temere le macchine e impara a guidarle. Benvenuto nell'Accademia di Franco Bagaglia, dove l'apprendimento non finisce mai e l'etica governa il codice.
+                </p>
             </div>
             
             <div id="catalog-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
-
-            <section class="mt-32 pt-20 border-t border-white/10">
-                <h3 class="text-3xl font-bold mb-12 text-center">Domande sul Percorso</h3>
-                <div class="max-w-3xl mx-auto space-y-4">
-                    <details class="group card-bg border border-white/10 rounded-2xl overflow-hidden transition-all duration-300">
-                        <summary class="flex justify-between items-center p-6 cursor-pointer font-bold text-lg hover:text-verde transition-colors">
-                            Cos'è l'Umanesimo Digitale?
-                            <svg class="w-6 h-6 transform transition-transform duration-300 text-verde" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                        </summary>
-                        <div class="p-6 pt-0 text-white/70 leading-relaxed border-t border-white/5">
-                            È la visione che pone l'uomo al centro dello sviluppo tecnologico. Non rifiutiamo l'intelligenza artificiale, ma la guidiamo con senso critico ed etica per democratizzare il sapere.
-                        </div>
-                    </details>
-                </div>
-            </section>
         </section>
 
-        <section id="view-detail" class="hidden animate-in fade-in duration-700">
-            <div id="course-header" class="mb-16"></div>
-            <div class="grid lg:grid-cols-3 gap-16">
-                <div class="lg:col-span-2 space-y-10">
-                    <div id="course-description" class="prose prose-invert lg:prose-xl max-w-none text-white/90"></div>
-                    <div id="sessions-list" class="space-y-6"></div>
-                </div>
-                <aside id="course-sidebar" class="space-y-8"></aside>
-            </div>
+        <section id="view-detail" class="hidden max-w-4xl mx-auto animate-in slide-in-from-bottom-4 duration-500">
+            <div id="detail-content" class="space-y-12"></div>
         </section>
+
     </main>
 
-    <footer class="mt-40 border-t border-white/10 py-20 bg-black/40">
-        <div class="max-w-7xl mx-auto px-6 text-center md:text-left flex flex-col md:flex-row justify-between items-center opacity-60 text-sm">
+    <footer class="mt-20 border-t border-white/10 py-12">
+        <div class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4 text-white/40 text-xs">
             <p>© 2024 Franco Bagaglia • Ingegnere e Umanista Digitale</p>
+            <div class="flex gap-6 font-bold uppercase tracking-widest">
+                <a href="#" class="hover:text-white transition-colors">Privacy</a>
+                <a href="#" class="hover:text-white transition-colors">Contatti</a>
+            </div>
         </div>
     </footer>
 
     <script>
-        const API_BASE = '/api/classroom';
-        
-        const MOCK_COURSES = [
-            { id: "aud-01", title: "Fondamenti di Umanesimo Digitale", subtitle: "Etica e creatività", creationTime: new Date().toISOString() }
-        ];
-
-        function getFullApiUrl(endpoint) {
-            return `/api/classroom${endpoint}`;
+        // Funzione per costruire URL assoluti ed evitare errori di parsing in ambienti sandbox
+        function getApiUrl(path) {
+            const base = window.location.origin;
+            // Se l'origine è un blob o nulla, proviamo a usare un percorso relativo senza la slash iniziale
+            if (!base || base === 'null') return '/api/classroom' + path;
+            return new URL('/api/classroom' + path, base).href;
         }
         
-        const views = {
-            catalog: document.getElementById('view-catalog'),
-            detail: document.getElementById('view-detail'),
-            loading: document.getElementById('loading'),
-            navBack: document.getElementById('nav-back')
-        };
+        const MOCK = [
+            { 
+                id: "aud-01", 
+                title: "Fondamenti di Umanesimo Digitale", 
+                subtitle: "Il primo passo verso la consapevolezza",
+                description: "Un'esplorazione profonda del rapporto tra uomo e algoritmo. Scopri come mantenere il controllo etico nell'era dell'automazione."
+            },
+            { 
+                id: "aud-02", 
+                title: "L'AI come Pennello", 
+                subtitle: "Creatività e Generative AI",
+                description: "Non lasciare che l'AI scriva al posto tuo. Usa i modelli linguistici per espandere il tuo potenziale creativo senza smarrire la tua voce."
+            }
+        ];
 
         async function init() {
             const params = new URLSearchParams(window.location.search);
             const courseId = params.get('id');
-            courseId ? await loadCourseDetail(courseId) : await loadCatalog();
-        }
-
-        function showView(viewName) {
-            Object.keys(views).forEach(key => views[key].classList.add('hidden'));
-            views[viewName].classList.remove('hidden');
-            if (viewName === 'detail') views.navBack.classList.remove('hidden');
+            if (courseId) {
+                await loadDetail(courseId);
+            } else {
+                await loadCatalog();
+            }
         }
 
         async function loadCatalog() {
             showView('loading');
             try {
-                const response = await fetch(getFullApiUrl('/courses'));
-                const courses = response.ok ? await response.json() : MOCK_COURSES;
-
-                const container = document.getElementById('catalog-grid');
-                document.getElementById('course-count').innerText = courses.length;
-                container.innerHTML = '';
-
-                courses.forEach(course => {
-                    const card = document.createElement('div');
-                    card.className = 'group card-bg border border-white/10 p-10 rounded-[32px] transition-custom hover:border-verde/50 hover:-translate-y-2 cursor-pointer flex flex-col h-full';
-                    card.onclick = () => window.location.href = `?id=${course.id}`;
-                    card.innerHTML = `
+                const url = getApiUrl('/courses');
+                const res = await fetch(url);
+                const courses = res.ok ? await res.json() : MOCK;
+                
+                const grid = document.getElementById('catalog-grid');
+                grid.innerHTML = courses.map(c => `
+                    <div class="card-umanista p-10 rounded-3xl cursor-pointer flex flex-col h-full" onclick="window.location.href='?id=${c.id}'">
                         <div class="flex-grow">
-                            <h3 class="text-3xl font-black mb-4 group-hover:text-verde transition-colors leading-tight">${course.title}</h3>
-                            <p class="text-white/70 text-sm leading-relaxed mb-8">${course.subtitle || 'Competenze critiche.'}</p>
+                            <h3 class="text-white text-2xl font-black mb-3 leading-tight">${c.title}</h3>
+                            <p class="text-[#CBD5E0] text-sm leading-relaxed mb-8">${c.subtitle || 'Percorso di alfabetizzazione digitale consapevole.'}</p>
                         </div>
-                        <div class="mt-auto text-verde font-bold text-xs uppercase tracking-widest">Esplora modulo →</div>
-                    `;
-                    container.appendChild(card);
-                });
-                showView('catalog');
-            } catch (error) {
-                renderCatalog(MOCK_COURSES);
+                        <div class="flex items-center gap-2 text-[#379557] font-bold text-xs uppercase tracking-widest">
+                            Inizia il viaggio <span>→</span>
+                        </div>
+                    </div>
+                `).join('');
+                
+                showView('view-catalog');
+            } catch (e) {
+                console.error("Fetch error:", e);
+                // Fallback ai dati mock in caso di errore di rete o di parsing
+                renderMockCatalog();
             }
         }
 
-        function renderCatalog(courses) {
-            const container = document.getElementById('catalog-grid');
-            container.innerHTML = '';
-            courses.forEach(c => {
-                const card = document.createElement('div');
-                card.className = 'group card-bg border border-white/10 p-10 rounded-[32px] transition-custom cursor-pointer';
-                card.onclick = () => window.location.href = `?id=${c.id}`;
-                card.innerHTML = `<h3 class="text-3xl font-black mb-4">${c.title}</h3><div class="text-verde font-bold text-xs uppercase tracking-widest">Esplora →</div>`;
-                container.appendChild(card);
-            });
-            showView('catalog');
+        function renderMockCatalog() {
+            const grid = document.getElementById('catalog-grid');
+            grid.innerHTML = MOCK.map(c => `
+                <div class="card-umanista p-10 rounded-3xl cursor-pointer flex flex-col h-full" onclick="window.location.href='?id=${c.id}'">
+                    <div class="flex-grow">
+                        <h3 class="text-white text-2xl font-black mb-3 leading-tight">${c.title}</h3>
+                        <p class="text-[#CBD5E0] text-sm leading-relaxed mb-8">${c.subtitle}</p>
+                    </div>
+                    <div class="flex items-center gap-2 text-[#379557] font-bold text-xs uppercase tracking-widest">
+                        Inizia il viaggio <span>→</span>
+                    </div>
+                </div>
+            `).join('');
+            showView('view-catalog');
         }
 
-        async function loadCourseDetail(id) {
+        async function loadDetail(id) {
             showView('loading');
+            document.getElementById('nav-back').classList.remove('hidden');
             try {
-                const response = await fetch(getFullApiUrl(`/courses/${id}`));
-                const course = response.ok ? await response.json() : MOCK_COURSES[0];
-                
-                document.getElementById('course-header').innerHTML = `<h2 class="text-7xl font-black">${course.title}</h2><p class="text-2xl text-verde font-medium mt-4 italic">${course.subtitle || ''}</p>`;
-                document.getElementById('course-description').innerHTML = `<p class="leading-relaxed">${course.description || 'Dettagli in arrivo.'}</p>`;
-                document.getElementById('sessions-list').innerHTML = `<div class="bg-white/5 p-10 rounded-[40px] border border-white/10"><h4 class="text-xl font-bold mb-4">Materiali Classroom</h4><p class="text-white/60 mb-8 text-lg">Accedi alla piattaforma Google per consultare slide, video e test.</p><a href="${course.link || '#'}" target="_blank" class="inline-block bg-verde text-white px-10 py-5 rounded-full uppercase font-black tracking-widest hover:scale-105 transition-transform">Entra nell'Aula Digitale</a></div>`;
-                showView('detail');
-            } catch (error) {
+                const url = getApiUrl(`/courses/${id}`);
+                const res = await fetch(url);
+                const c = res.ok ? await res.json() : MOCK.find(m => m.id === id) || MOCK[0];
+
+                document.getElementById('detail-content').innerHTML = `
+                    <div class="border-l-4 border-[#379557] pl-8 mb-12">
+                        <h2 class="text-white text-6xl font-black leading-none mb-4">${c.title}</h2>
+                        <p class="text-[#379557] text-xl font-bold italic">${c.subtitle || ''}</p>
+                    </div>
+                    
+                    <div class="bg-white/5 p-12 rounded-[40px] border border-white/10 space-y-8">
+                        <div class="prose prose-invert max-w-none">
+                            <p class="text-gray-200 text-xl leading-relaxed">${c.description || 'Contenuto del corso in fase di sincronizzazione.'}</p>
+                        </div>
+                        
+                        <div class="pt-8 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-6">
+                            <div>
+                                <h4 class="text-white font-bold mb-1">Accesso Google Classroom</h4>
+                                <p class="text-sm text-gray-400">Tutti i materiali sono centralizzati per la tua comodità.</p>
+                            </div>
+                            <a href="${c.link || '#'}" target="_blank" class="bg-[#379557] hover:bg-[#2e7d49] text-white px-10 py-4 rounded-full font-black uppercase tracking-widest transition-all hover:scale-105">
+                                Entra in Aula
+                            </a>
+                        </div>
+                    </div>
+                `;
+                showView('view-detail');
+            } catch (e) {
+                console.error("Detail fetch error:", e);
                 window.location.href = '/';
             }
+        }
+
+        function showView(viewId) {
+            ['loading', 'view-catalog', 'view-detail'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.classList.add('hidden');
+            });
+            const target = document.getElementById(viewId);
+            if (target) target.classList.remove('hidden');
         }
 
         window.onload = init;
