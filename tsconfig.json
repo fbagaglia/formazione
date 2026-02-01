@@ -2,15 +2,12 @@
   "compilerOptions": {
     "target": "ESNext",
     "module": "ESNext",
-    "moduleResolution": "Bundler",
+    "moduleResolution": "node",
     "strict": true,
+    "esModuleInterop": true,
     "skipLibCheck": true,
-    "lib": [
-      "ESNext",
-      "DOM"
-    ],
-    "types": ["vite/client", "node"],
-    "jsx": "react-jsx",
-    "jsxImportSource": "hono/jsx"
+    "forceConsistentCasingInFileNames": true,
+    "outDir": "dist"
   },
+  "include": ["api/**/*"]
 }
