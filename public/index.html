@@ -71,22 +71,26 @@
 
     <main class="max-w-6xl mx-auto px-6 py-16">
         
+        <!-- Stato di caricamento -->
         <div id="loading" class="flex flex-col items-center justify-center py-32">
             <div class="spinner mb-4"></div>
-            <p class="text-sm uppercase tracking-widest text-white/50">Sincronizzazione Sapere...</p>
+            <p class="text-sm uppercase tracking-widest text-white/50 font-bold">Sincronizzazione Sapere...</p>
         </div>
 
+        <!-- Vista Catalogo -->
         <section id="view-catalog" class="hidden animate-in fade-in duration-700">
             <div class="max-w-3xl mb-16">
                 <h2 class="text-white text-5xl md:text-6xl font-black mb-6 leading-tight tracking-tighter">
                     L'uomo al centro della <span class="text-[#379557]">Rivoluzione</span>.
                 </h2>
-                <p class="text-gray-300 text-lg md:text-xl leading-relaxed">
+                <p class="text-gray-200 text-lg md:text-xl leading-relaxed">
                     Benvenuto nell'Accademia di Franco Bagaglia. Esplora i percorsi formativi progettati per navigare l'era dell'Intelligenza Artificiale con consapevolezza critica ed etica.
                 </p>
             </div>
             
-            <div id="catalog-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+            <div id="catalog-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- I corsi verranno iniettati qui -->
+            </div>
         </section>
     </main>
 
@@ -102,15 +106,15 @@
 
     <script>
         /**
-         * Navigazione sicura per evitare errori di URL non validi.
+         * Navigazione sicura per evitare errori in ambienti sandbox.
          */
         function safeNavigate(path) {
-            if (!path || typeof path !== 'string' || path.trim() === '') return;
+            if (!path || path.trim() === "") return;
             window.location.href = path;
         }
 
         /**
-         * Costruzione URL API resiliente.
+         * Costruzione dell'URL API.
          */
         function getApiUrl(path) {
             const apiBase = '/api/classroom' + path;
@@ -124,6 +128,7 @@
             }
         }
         
+        // Dati di fallback nel caso l'API non risponda
         const MOCK = [
             { 
                 id: "aud-01", 
@@ -138,17 +143,13 @@
         ];
 
         async function init() {
-            const params = new URLSearchParams(window.location.search);
-            const courseId = params.get('id');
-            if (courseId) {
-                safeNavigate(`course.html?id=${courseId}`);
-            } else {
-                await loadCatalog();
-            }
+            await loadCatalog();
         }
 
         async function loadCatalog() {
-            showView('loading');
+            const loadingEl = document.getElementById('loading');
+            const catalogEl = document.getElementById('view-catalog');
+            
             try {
                 const url = getApiUrl('/courses');
                 const res = await fetch(url);
@@ -161,7 +162,7 @@
                     <div class="card-umanista p-10 rounded-3xl cursor-pointer flex flex-col h-full" onclick="safeNavigate('course.html?id=${c.id}')">
                         <div class="flex-grow">
                             <h3 class="text-white text-2xl font-black mb-3 leading-tight">${c.title}</h3>
-                            <p class="text-[#CBD5E0] text-sm leading-relaxed mb-8">${c.subtitle || 'Percorso di alfabetizzazione digitale consapevole.'}</p>
+                            <p class="text-[#CBD5E0] text-sm leading-relaxed mb-8 font-medium">${c.subtitle || 'Percorso di alfabetizzazione digitale consapevole.'}</p>
                         </div>
                         <div class="flex items-center gap-2 text-[#379557] font-bold text-xs uppercase tracking-widest">
                             Entra in aula <span>→</span>
@@ -169,7 +170,8 @@
                     </div>
                 `).join('');
                 
-                showView('view-catalog');
+                loadingEl.classList.add('hidden');
+                catalogEl.classList.remove('hidden');
             } catch (e) {
                 console.warn("API non raggiungibile, uso dati mock.");
                 renderMockCatalog();
@@ -184,23 +186,16 @@
                 <div class="card-umanista p-10 rounded-3xl cursor-pointer flex flex-col h-full" onclick="safeNavigate('course.html?id=${c.id}')">
                     <div class="flex-grow">
                         <h3 class="text-white text-2xl font-black mb-3 leading-tight">${c.title}</h3>
-                        <p class="text-[#CBD5E0] text-sm leading-relaxed mb-8">${c.subtitle}</p>
+                        <p class="text-[#CBD5E0] text-sm leading-relaxed mb-8 font-medium">${c.subtitle}</p>
                     </div>
                     <div class="flex items-center gap-2 text-[#379557] font-bold text-xs uppercase tracking-widest">
                         Entra in aula <span>→</span>
                     </div>
                 </div>
             `).join('');
-            showView('view-catalog');
-        }
-
-        function showView(viewId) {
-            ['loading', 'view-catalog'].forEach(id => {
-                const el = document.getElementById(id);
-                if (el) el.classList.add('hidden');
-            });
-            const target = document.getElementById(viewId);
-            if (target) target.classList.remove('hidden');
+            
+            document.getElementById('loading').classList.add('hidden');
+            document.getElementById('view-catalog').classList.remove('hidden');
         }
 
         window.onload = init;
