@@ -2,6 +2,7 @@ import { Hono } from 'hono'
 import { handle } from 'hono/vercel'
 import { cors } from 'hono/cors'
 // Assicurati che src/classroom.ts esporti queste funzioni
+// Aggiunta l'estensione .js necessaria per la risoluzione dei moduli in NodeNext/ESM
 import { 
   getCourses, 
   getCourseDetail, 
@@ -9,7 +10,7 @@ import {
   getCourseWork,
   getMaterials,
   getTopics 
-} from '../src/classroom'
+} from '../src/classroom.js'
 
 const app = new Hono()
 
