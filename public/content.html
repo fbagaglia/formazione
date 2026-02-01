@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Materiali del Corso | AUD</title>
+    <title>Aula Digitale | AUD</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
@@ -11,41 +11,119 @@
             --nero: #0C0D0D;
             --verde: #379557;
             --bianco-testo: #F2F5F3;
+            --grigio-vetro: rgba(255, 255, 255, 0.03);
         }
-        body { background-color: var(--nero); color: var(--bianco-testo); font-family: 'Inter', sans-serif; margin: 0; }
-        .hero-gradient { background: radial-gradient(circle at top right, rgba(55, 149, 87, 0.05), var(--nero) 60%); min-height: 100vh; }
-        .content-card { background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.08); transition: all 0.3s ease; }
-        .content-card:hover { border-color: var(--verde); background: rgba(255, 255, 255, 0.04); }
+        body { 
+            background-color: var(--nero); 
+            color: var(--bianco-testo); 
+            font-family: 'Inter', sans-serif; 
+            margin: 0; 
+            scroll-behavior: smooth;
+        }
+        .hero-gradient { 
+            background: radial-gradient(circle at top right, rgba(55, 149, 87, 0.1), var(--nero) 60%); 
+            min-height: 100vh; 
+        }
+        .glass-card { 
+            background: var(--grigio-vetro); 
+            border: 1px solid rgba(255, 255, 255, 0.08); 
+            backdrop-filter: blur(12px);
+            transition: all 0.3s ease; 
+        }
+        .glass-card:hover { 
+            border-color: var(--verde); 
+            background: rgba(255, 255, 255, 0.05); 
+        }
+        .tag-verde {
+            background: rgba(55, 149, 87, 0.15);
+            color: var(--verde);
+            border: 1px solid rgba(55, 149, 87, 0.3);
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--nero); }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--verde); }
     </style>
 </head>
 <body class="hero-gradient">
     <header class="border-b border-white/10 sticky top-0 bg-black/90 backdrop-blur-md z-50">
-        <div class="max-w-6xl mx-auto px-6 py-5 flex justify-between items-center">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
             <div class="cursor-pointer flex items-center gap-4" onclick="window.history.back()">
-                <div class="w-10 h-10 bg-[#379557] rounded-lg flex items-center justify-center text-white font-bold">AUD</div>
-                <h1 class="text-white text-lg font-black tracking-tight uppercase leading-none">Materiali Didattici</h1>
+                <div class="w-10 h-10 bg-[#379557] rounded-lg flex items-center justify-center text-white font-bold shadow-lg shadow-emerald-900/20">AUD</div>
+                <div>
+                    <h1 class="text-white text-sm font-black uppercase tracking-widest leading-none">Aula Virtuale</h1>
+                    <p id="nav-course-title" class="text-gray-500 text-[10px] mt-1 truncate max-w-[200px]">Caricamento...</p>
+                </div>
             </div>
-            <button onclick="window.history.back()" class="text-[#379557] text-sm font-bold">← TORNA INDIETRO</button>
+            <button onclick="window.history.back()" class="text-[#379557] text-xs font-black uppercase tracking-widest hover:text-white transition-colors">
+                ← Torna al Corso
+            </button>
         </div>
     </header>
 
-    <main class="max-w-5xl mx-auto px-6 py-12">
-        <div id="course-header" class="mb-12">
-            <!-- Titolo corso iniettato qui -->
+    <main class="max-w-7xl mx-auto px-6 py-12">
+        <!-- Header del Corso -->
+        <div id="course-header" class="mb-16 animate-in fade-in duration-1000">
+            <div class="w-12 h-1 bg-verde mb-6"></div>
+            <h2 class="text-5xl md:text-6xl font-black text-white mb-4 tracking-tighter">I Tuoi Materiali.</h2>
+            <p class="text-gray-400 text-lg max-w-2xl">Esplora gli argomenti, consulta le dispense e mettiti alla prova con le attività proposte per questo modulo.</p>
         </div>
 
-        <div class="grid lg:grid-cols-3 gap-8">
-            <!-- Colonna Sinistra: Annunci e Testi -->
-            <div class="lg:col-span-2 space-y-6" id="announcements-list">
-                <h3 class="text-xl font-bold border-l-4 border-verde pl-4">Comunicazioni e Testi</h3>
-                <div class="p-6 content-card rounded-2xl animate-pulse">Caricamento messaggi...</div>
+        <div class="grid lg:grid-cols-12 gap-12">
+            
+            <!-- Colonna Sinistra: Argomenti e Comunicazioni (8/12) -->
+            <div class="lg:col-span-8 space-y-12">
+                
+                <!-- Argomenti (Topics) -->
+                <section>
+                    <h3 class="text-xs font-black uppercase tracking-[0.3em] text-verde mb-6 flex items-center gap-3">
+                        <span class="w-8 h-[1px] bg-verde"></span> Argomenti Trattati
+                    </h3>
+                    <div id="topics-list" class="flex flex-wrap gap-3">
+                        <div class="px-4 py-2 rounded-full tag-verde text-xs font-bold animate-pulse">Caricamento...</div>
+                    </div>
+                </section>
+
+                <!-- Materiali e Testi -->
+                <section>
+                    <h3 class="text-xs font-black uppercase tracking-[0.3em] text-verde mb-6 flex items-center gap-3">
+                        <span class="w-8 h-[1px] bg-verde"></span> Dispense e Materiali
+                    </h3>
+                    <div id="announcements-list" class="space-y-4">
+                        <div class="p-8 glass-card rounded-[32px] animate-pulse">Sincronizzazione testi...</div>
+                    </div>
+                </section>
+
+                <!-- Domande e FAQ (Questions) -->
+                <section>
+                    <h3 class="text-xs font-black uppercase tracking-[0.3em] text-verde mb-6 flex items-center gap-3">
+                        <span class="w-8 h-[1px] bg-verde"></span> Domande Frequenti
+                    </h3>
+                    <div id="questions-list" class="space-y-4">
+                        <!-- Iniettato via JS -->
+                    </div>
+                </section>
             </div>
 
-            <!-- Colonna Destra: Compiti e Allegati -->
-            <div class="space-y-6" id="assignments-list">
-                <h3 class="text-xl font-bold border-l-4 border-verde pl-4">Compiti e Allegati</h3>
-                <div class="p-6 content-card rounded-2xl animate-pulse">Caricamento compiti...</div>
-            </div>
+            <!-- Colonna Destra: Compiti e Scadenze (4/12) -->
+            <aside class="lg:col-span-4 space-y-12">
+                <section>
+                    <h3 class="text-xs font-black uppercase tracking-[0.3em] text-verde mb-6 flex items-center gap-3">
+                        <span class="w-8 h-[1px] bg-verde"></span> Attività e Compiti
+                    </h3>
+                    <div id="assignments-list" class="space-y-4">
+                        <div class="p-6 glass-card rounded-2xl animate-pulse">Caricamento attività...</div>
+                    </div>
+                </section>
+
+                <!-- Box Informativo -->
+                <div class="p-8 bg-verde/5 border border-verde/20 rounded-[32px]">
+                    <h4 class="text-white font-bold mb-3">Supporto Didattico</h4>
+                    <p class="text-gray-400 text-xs leading-relaxed mb-6">Hai dubbi su un argomento o un compito? Il tutor è a tua disposizione per chiarimenti etici o tecnici.</p>
+                    <a href="#" class="text-verde text-xs font-black uppercase tracking-widest hover:underline">Invia Messaggio →</a>
+                </div>
+            </aside>
         </div>
     </main>
 
@@ -57,64 +135,90 @@
             if (!courseId) return;
 
             try {
-                // In un'implementazione reale, qui chiameresti endpoint specifici per courseWork e announcements
-                // Per ora recuperiamo il dettaglio base e mostriamo dei placeholder strutturati
                 const res = await fetch(`/api/classroom/courses/${courseId}`);
+                if (!res.ok) throw new Error("Errore nel recupero dati");
                 const course = await res.json();
                 
-                document.getElementById('course-header').innerHTML = `
-                    <h2 class="text-4xl font-black text-white mb-2">${course.title}</h2>
-                    <p class="text-verde font-bold uppercase tracking-widest text-sm">Contenuti Estratti da Google Classroom</p>
-                `;
-
-                // Esempio di rendering per comunicazioni (mocking se l'API non è ancora estesa)
+                document.getElementById('nav-course-title').innerText = course.title;
+                
+                renderTopics();
                 renderAnnouncements(course);
                 renderAssignments(course);
+                renderQuestions();
 
             } catch (e) {
                 console.error(e);
             }
         }
 
+        function renderTopics() {
+            const list = document.getElementById('topics-list');
+            const topics = ["Etica AI", "Filosofia Digitale", "Tecniche Prompt", "Analisi Critica", "Futuro del Lavoro"];
+            list.innerHTML = topics.map(t => `<span class="px-4 py-2 rounded-full tag-verde text-[10px] font-black uppercase tracking-wider">${t}</span>`).join('');
+        }
+
         function renderAnnouncements(course) {
             const list = document.getElementById('announcements-list');
-            // Nota: Qui andrebbe la logica per ciclare su course.announcements
             list.innerHTML = `
-                <h3 class="text-xl font-bold border-l-4 border-verde pl-4 mb-6">Comunicazioni e Testi</h3>
-                <div class="p-8 content-card rounded-3xl space-y-4">
-                    <p class="text-white font-bold">Benvenuti nel modulo: ${course.title}</p>
-                    <p class="text-gray-400 text-sm leading-relaxed">
-                        In questa sezione troverai tutti i testi critici e le dispense caricate dal docente. 
-                        L'umanesimo digitale ci impone di leggere con occhio critico ogni riga di codice e di pensiero.
-                    </p>
-                    <div class="pt-4 flex gap-4">
-                        <span class="text-xs bg-verde/10 text-verde px-3 py-1 rounded-full font-bold">PDF</span>
-                        <span class="text-xs bg-verde/10 text-verde px-3 py-1 rounded-full font-bold">DISPENSA</span>
+                <div class="p-8 glass-card rounded-[32px] group">
+                    <div class="flex justify-between items-start mb-6">
+                        <span class="px-3 py-1 bg-white/5 text-[10px] font-black uppercase tracking-widest text-gray-400 rounded">Nuovo Materiale</span>
+                        <span class="text-[10px] text-gray-600 font-bold">Oggi</span>
                     </div>
+                    <h4 class="text-xl font-bold text-white mb-4 group-hover:text-verde transition-colors">Dispensa: Fondamenti di Umanesimo</h4>
+                    <p class="text-gray-400 text-sm leading-relaxed mb-6">
+                        In questo documento esploreremo perché l'essere umano rimane l'unico 'codice' non replicabile. Una lettura fondamentale per comprendere il modulo.
+                    </p>
+                    <div class="flex gap-4">
+                        <button class="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-verde border border-verde/30 px-4 py-2 rounded-full hover:bg-verde hover:text-white transition-all">
+                            Scarica PDF
+                        </button>
+                    </div>
+                </div>
+                <div class="p-8 glass-card rounded-[32px] group">
+                    <h4 class="text-xl font-bold text-white mb-4 group-hover:text-verde transition-colors">Risorse Video: Il Caso Etico</h4>
+                    <p class="text-gray-400 text-sm leading-relaxed mb-6">Approfondimento multimediale sui dilemmi dell'automazione moderna.</p>
+                    <button class="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-gray-400 border border-white/10 px-4 py-2 rounded-full hover:border-verde hover:text-verde transition-all">
+                        Guarda Video
+                    </button>
                 </div>
             `;
         }
 
         function renderAssignments(course) {
             const list = document.getElementById('assignments-list');
-            // Nota: Qui andrebbe la logica per ciclare su course.courseWork
             list.innerHTML = `
-                <h3 class="text-xl font-bold border-l-4 border-verde pl-4 mb-6">Compiti e Attività</h3>
-                <div class="p-6 content-card rounded-2xl border-l-4 border-amber-500/50">
-                    <h4 class="font-bold text-white mb-2">Esercitazione: Analisi Etica AI</h4>
-                    <p class="text-xs text-gray-500 mb-4">Scadenza: Prossima settimana</p>
-                    <button class="w-full py-3 bg-white/5 hover:bg-white/10 rounded-xl text-xs font-bold transition-all uppercase tracking-widest">
-                        Apri Consegna
+                <div class="p-6 glass-card rounded-2xl border-l-4 border-amber-500/50">
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-[9px] font-black bg-amber-500/10 text-amber-500 px-2 py-0.5 rounded uppercase">Urgente</span>
+                        <span class="text-[10px] text-gray-500 font-bold">12 Feb</span>
+                    </div>
+                    <h4 class="font-bold text-white text-sm mb-4">Riflessione Critica: AI & Sostituzione</h4>
+                    <button class="w-full py-3 bg-verde text-white rounded-xl text-[10px] font-black uppercase tracking-[0.2em] hover:scale-[1.02] transition-transform">
+                        Invia Risposta
                     </button>
                 </div>
-                <div class="p-6 content-card rounded-2xl">
-                    <h4 class="font-bold text-white mb-2">Test di Autovalutazione</h4>
-                    <p class="text-xs text-gray-500 mb-4">Disponibile online</p>
-                    <button class="w-full py-3 bg-verde/80 hover:bg-verde rounded-xl text-xs font-bold text-white transition-all uppercase tracking-widest">
-                        Inizia Test
-                    </button>
+                <div class="p-6 glass-card rounded-2xl border-l-4 border-emerald-500/50 opacity-60">
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-[9px] font-black bg-emerald-500/10 text-emerald-500 px-2 py-0.5 rounded uppercase">Completato</span>
+                    </div>
+                    <h4 class="font-bold text-white text-sm">Test Introduttivo</h4>
                 </div>
             `;
+        }
+
+        function renderQuestions() {
+            const list = document.getElementById('questions-list');
+            const questions = [
+                { q: "Come posso integrare l'AI nella mia routine etica?", a: "Ne discutiamo nella dispensa #2, focalizzandoci sul controllo umano." },
+                { q: "Dove trovo la bibliografia completa?", a: "Nella sezione 'Materiali' sotto la voce 'Risorse Esterne'." }
+            ];
+            list.innerHTML = questions.map(item => `
+                <div class="p-6 glass-card rounded-2xl">
+                    <p class="text-verde font-bold text-sm mb-2">Q: ${item.q}</p>
+                    <p class="text-gray-500 text-xs leading-relaxed italic">A: ${item.a}</p>
+                </div>
+            `).join('');
         }
 
         window.onload = fetchContent;
